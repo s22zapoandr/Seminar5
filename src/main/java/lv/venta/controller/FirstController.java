@@ -1,5 +1,8 @@
 package lv.venta.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import org.springframework.stereotype.Controller;
@@ -35,7 +38,14 @@ public class FirstController {
 		return "product-page";
 		
 	}
-
 	
-	
+	public List<Product> getProductList() {
+		System.out.println("The fourth controller");
+		List<Product> allProducts = new ArrayList<Product>();
+		Product milk = new Product("Milk", "is white", 0.89f, 1);
+		Product banana = new Product("Banana", "is vegetable", 0.5f, 3);
+		Product carrot = new Product("Carrot", "does not improve vision", 0.33f, 5);
+		allProducts.addAll(Arrays.asList(milk, banana, carrot));
+		return allProducts;	
+	}
 }
