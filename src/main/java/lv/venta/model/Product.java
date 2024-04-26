@@ -15,7 +15,7 @@ import lombok.ToString;
 
 @Getter
 @Setter
-//@NoArgsConstructor
+@NoArgsConstructor
 //@RequiredArgsConstructor
 @ToString
 @Table(name = "ProductTable")
