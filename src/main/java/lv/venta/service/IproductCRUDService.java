@@ -18,7 +18,7 @@ public interface IproductCRUDService {
 	public abstract void updateById(int id, String title, String description, float price, int quantity) throws Exception;
 	
 	//delete
-	public abstract void deleteBuId(int id) throws Exception;
+	public abstract void deleteById(int id) throws Exception;
 	
 	
 }

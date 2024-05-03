@@ -19,8 +19,20 @@ public class ProductServiceImplementation implements IproductCRUDService, IProdu
 	
 	@Override
 	public void create(String title, String description, float price, int quantity) throws Exception {
-		// TODO Auto-generated method stub
+		if (title == null || description == null || price < 0 || quantity < 0)
+			throw new Exception("Problems in input");
 		
+		Product productFromDB = productRepo.findByTitleAndDescriptionAndPrice(title, description, price);
+		// product exists
+		if(productFromDB!=null) {
+			productFromDB.setQuantity(productFromDB.getQuantity() + quantity);//will change only in back-end layer
+			productRepo.save(productFromDB);//will change also in database layer
+		}
+		else
+		{
+			Product productNew = new Product(title, description, price, quantity);//will create new product only in back-end layer
+			productRepo.save(productNew);//will save it also in database layer
+		}
 	}
 
 	@Override
@@ -52,7 +64,7 @@ public class ProductServiceImplementation implements IproductCRUDService, IProdu
 	}
 
 	@Override
-	public void deleteBuId(int id) throws Exception {
+	public void deleteById(int id) throws Exception {
 		Product productForDeletingProduct = retrieveById(id);
 		productRepo.delete(productForDeletingProduct);
 		
