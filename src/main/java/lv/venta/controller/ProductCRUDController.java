@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +15,8 @@ import lv.venta.model.Product;
 import lv.venta.service.IProductFilteringService;
 import lv.venta.service.IproductCRUDService;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import jakarta.validation.Valid;
 
 
 @Controller
@@ -78,18 +81,22 @@ public class ProductCRUDController {
 		
 	}
 	@PostMapping("/create")
-	public String postproductCRUDCreate(Product product, Model model)
+	public String postproductCRUDCreate(@Valid Product product, BindingResult result, Model model)
 	{
+		if(result.hasErrors()) {
+			return "create-product-page";
+		}
+		else {
 		try {
-			productCRUDservice.create(product.getTitle(), product.getDescription(),
-					product.getPrice(), product.getQuantity());
-			return "redirect:/product/crud/CRUD";//the endpoint localhost:8080/product/crud/CRUD will be called
+			productCRUDservice.create(product.getTitle(), product.getDescription(), product.getPrice(),
+					product.getQuantity());
+			return "redirect:/product/crud/CRUD";// the endpoint localhost:8080/product/crud/CRUD will be called
 
 		} catch (Exception e) {
 			model.addAttribute("mypackage", e.getMessage());
-			return "error-page";//will show error-page.html page with exception message
+			return "error-page";// will show error-page.html page with exception message
+			}
 		}
-
 	}
 	
 	@GetMapping("/update/{id}") //localhost:8080/product/crud/update/1
@@ -109,16 +116,33 @@ public class ProductCRUDController {
 	}
 	
 	@PostMapping("/update/{id}")
-	public String postproductCRUDUpdateByID(@PathVariable("id") int id, Product product, Model model ){
-		System.out.println(product);
+	public String postproductCRUDUpdateByID(@PathVariable("id") int id, @Valid Product product, BindingResult result, Model model ){
+		if(result.hasErrors()) {
+			return "update-product-page";
+		}
+		else {
 		try {
 			productCRUDservice.updateById(id, product.getTitle(), product.getDescription(), product.getPrice() ,product.getQuantity());
 			return "redirect:/product/crud/CRUD/" + id;
+			}
+		catch(Exception e){
+			model.addAttribute("mypackage", e.getMessage());
+			return "error-page";
+			}
+		}
+	}
+	@GetMapping("/delete/{id}") //localhost:8080/product/crud/delete/1
+	public String getProductCRUDDeleteByID (@PathVariable("id") int id, Model model) {
+		try {
+			productCRUDservice.deleteById(id);
+			ArrayList<Product> result = productCRUDservice.retrieveALl();
+			model.addAttribute("mypackage", result);
+			return "show-all-product-page";
 		}
 		catch(Exception e){
 			model.addAttribute("mypackage", e.getMessage());
 			return "error-page";
 		}
 	}
-	
+
 }

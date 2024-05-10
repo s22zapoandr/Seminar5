@@ -68,17 +68,20 @@ public class ProductServiceImplementation implements IproductCRUDService, IProdu
 		
 	}
 
-	@Override
-	public void deleteById(int id) throws Exception {
+	@Override                                                         
+	public void deleteById(int id) throws Exception {                              
 		Product productForDeletingProduct = retrieveById(id);
 		productRepo.delete(productForDeletingProduct);
 		
 	}
 
 	@Override
-	public ArrayList<Product> filterByQuantitythreshold(int threshold) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+	public ArrayList<Product> filterByQuantityThreshold(int threshold) throws Exception {
+		if(productRepo.count() == 0) throw new Exception("Product table is empty");
+		ArrayList<Product> result = productRepo.findByQuantityLessThan(threshold);
+		if(result.isEmpty()) throw new Exception("There is no product which quantity is less then " + threshold);
+		
+		return result;
 	}
 
 	@Override
